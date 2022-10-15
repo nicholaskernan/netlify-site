@@ -1,0 +1,10 @@
+www1.wdr.de.v1.edgekey.net..json
+www.afpw.af.mil.edgekey.net..json
+www.geeksforgeeks.org.edgesuite.net..json
+c-s.cms.ms.akadns.net..json
+www.nobelpeaceprize.org.edgesuite.net..json
+www.mfa.gr.edgesuite.net..json
+azureedge.mdc.akamaized.net..json
+cdn4.thumbrio.edgekey.net..json
+cdn.prod.www.manager-magazin.de.edgesuite.net..json
+ion.cloudinary.com.edgekey.net..json
