@@ -20,9 +20,8 @@ with open("./data/probe_coordinates.json") as f:
 def get_graphs():
     choices = request.get_json()
     print(f"choices: {choices}")
-    for key in choices:
-        if key != "month" and key != "reg":
-            choices[key] = choices[key].lower()
+    for key in ["cdn", "msm", "avg"]:
+        choices[key] = choices[key].lower()
     buffer = BytesIO()
 
     region = choices["reg"]
