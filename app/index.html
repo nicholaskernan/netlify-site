@@ -106,7 +106,6 @@
         myImage.src = imageUrl
         document.querySelector("#images").appendChild(myImage);
         //document.querySelector("#image").src = imageUrl;
-        document.querySelector("#map-container").style.visibility = "visible"
     }
 
     function monthResponse(e) {
@@ -125,6 +124,7 @@
     function clear() {
         images = document.querySelectorAll("img")
         images.forEach((img) => img.remove())
+        document.querySelector("#map-container").style.visibility = "hidden"
     }
 
     function getChoices() {
@@ -208,6 +208,7 @@
             probe_data = this.response
             document.querySelector("#message").textContent = probe_data["message"]
             makeAllMarkers()
+            setTimeout(() => {document.querySelector("#map-container").style.visibility = "visible"}, 2000)
         }
 
         function getProbes() {
