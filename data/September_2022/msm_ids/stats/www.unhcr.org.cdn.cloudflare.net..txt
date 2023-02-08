@@ -1,1 +1,0 @@
-www.unhcr.org.cdn.cloudflare.net., Total SSL: 10347, Target SSL: 12150, Success rate: 0.8516049382716049
