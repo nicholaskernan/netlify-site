@@ -1,5 +1,5 @@
 const fs = require('fs');
-const months = fs.readdirSync('../data/');
+const months = fs.readdirSync('../../data/');
 
 exports.handler = async () => {
     console.log(months)
