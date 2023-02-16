@@ -1,1 +1,275 @@
-<h1> This is a test </h1>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DNS/TCP Web Portal</title>
+    <style>
+        #map{
+        height:100%;
+        width:80%;
+        margin-left: 10%;
+        margin-right: 10%;
+        }
+        img {
+            margin-left: 5%;
+            margin-bottom: 5%;
+        }
+    </style>  
+</head>
+<body>
+    <div>
+        <h1 style="text-align: center;"> DNS/TCP Measurements Web Portal </h1>
+
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+        &nbsp; &nbsp; &nbsp; &nbsp; 
+        <label for="month">Month:</label>
+        <select name="month" id="month">
+        </select>
+
+        &nbsp; &nbsp; &nbsp; &nbsp; 
+        <label for="cdn">CDN:</label>
+        <select name="cdn" id="cdn">
+            <option>All</option>
+            <option>Akamai</option>
+            <option>Cloudflare</option>
+            <option>Edgecast</option>
+            <option>Fastly</option>
+        </select>
+
+        &nbsp; &nbsp; &nbsp; &nbsp;
+        <label for="ip">IP:</label>
+        <select name="ip" id="ip">
+            <option>Dual-stack</option>
+            <option>IPv4</option>
+            <option>IPv6</option>
+        </select>
+
+        &nbsp; &nbsp; &nbsp; &nbsp;
+        <label for="region">Region:</label>
+        <select name="region" id="region">
+            <option>Global</option>
+            <option>Europe</option>
+            <option>N. America</option>
+            <option>Asia</option>
+            <option>S. America</option>
+            <option>Oceania</option>
+            <option>Africa</option>
+        </select>
+
+        &nbsp; &nbsp; &nbsp; &nbsp; 
+        <button onclick="getChoices()">Submit</button>
+
+        <p style="text-align: center; margin-left: 10%; margin-right: 10%;"> 
+            Every month, we schedule measurements from ~400 Ripe-Atlas probes globally to evaluate various resolvers by comparing DNS latency 
+            and TCP latency to the edge server returned by the resolver, and to see if this performance depends on the geographic region of the probe or 
+            the CDN employed by the measured website. Results are obtained by taking the average (median or mean) over every website with your chosen 
+            CDN, for each probe-resolver pairing. 
+        </p>
+        <p style="text-align: center; margin-left: 10%; margin-right: 10%;"> 
+            Clicking "submit" will display CDFs for your chosen options. Under each one is also reported the average latency of the best and worst
+            resolver, as well as the overall average latency for that graph.
+        </p>
+    </div>
+    <hr>
+    <br>
+    <div id="images"></div>
+    <div id="map-container" style="visibility: hidden; text-align: center;">
+        <br> <br> <br> <br> <br> 
+        <h1> Probe Map </h1> <p id="message"> </p><hr>
+        <div id='map'></div>
+    </div>  
+</body>
+<script>
+    console.log("here")
+    var xhr = null;
+    const base_url = "https://luxury-kheer-a22a0d.netlify.app" //"http://localhost:8888"
+    const functions_url = ".netlify/functions"
+
+    getXmlHttpRequestObject = function (isImage) {
+        // Create a new XMLHttpRequest object 
+        xhr = new XMLHttpRequest();
+        xhr.responseType = "json"
+        if (isImage) {
+        //    xhr.responseType = "blob"
+            xhr.onload = imageResponse;
+        } else {  
+            xhr.onload = monthResponse
+        }
+        return xhr;
+    };
+
+    function imageResponse(e) {
+        console.log(this.response["url"])
+        var urlCreator = window.URL || window.webkitURL;
+        //var imageUrl = urlCreator.createObjectURL(this.response);
+        const myImage = new Image()
+        console.log(`${base_url}/${this.response["url"]}`)
+        myImage.src = `${base_url}/${this.response["url"]}` //imageUrl
+        document.querySelector("#images").appendChild(myImage);
+        //document.querySelector("#image").src = imageUrl;
+    }
+
+    function monthResponse(e) {
+        console.log("MONTH RESPONSE")
+        console.log(this.response)
+        const select = document.getElementById("month");
+
+        this.response["months"].forEach(element => {
+            console.log(element)
+            const option = document.createElement("option");
+            option.text = element;
+            select.add(option);
+        });
+    }
+
+    function clear() {
+        images = document.querySelectorAll("img")
+        images.forEach((img) => img.remove())
+        document.querySelector("#map-container").style.visibility = "hidden"
+    }
+
+    function getChoices() {
+        clear()
+        initMap()
+
+        month = document.querySelector("#month").value
+        cdn = document.querySelector("#cdn").value
+        ip = document.querySelector("#ip").value
+        reg = document.querySelector("#region").value
+
+
+        choices = {"month": month, "cdn": cdn, "ip": ip, "reg": reg}
+        console.log(choices)
+
+        if (cdn=="All") {
+            const cdns = ["Akamai", "Cloudflare", "Edgecast", "Fastly"]
+            console.log("mama mia")
+            console.log(cdns)
+            
+            for (i=0; i<4; i++) {
+                element = cdns[i]
+                console.log(element)
+                const copy = Object.assign({}, choices)
+                copy["cdn"] = element
+                setTimeout(() => {addFourGraphs(copy)}, i*400);
+            }
+        } else {
+            addFourGraphs(choices)
+        }        
+    }
+
+    function addFourGraphs(choices) {
+        const avg = ["Median", "Mean"]
+        const msm = ["DNS", "SSL"]
+
+        for (i=0; i<2; i++) {
+            for(x=0; x<2; x++) {
+                const copy = Object.assign({}, choices)
+                copy["avg"] = avg[i]
+                copy["msm"] = msm[x]
+                setTimeout(() => {getGraphs(copy)}, (i+x)*100);
+            }
+        }
+    }
+
+    function getGraphs(choices) {
+        console.log(choices)
+        xhr = getXmlHttpRequestObject(true);
+        
+        // asynchronous requests
+        xhr.open("POST", `${base_url}/${functions_url}/graphs`, true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        // Send the request over the network
+        xhr.send(JSON.stringify(choices));
+        console.log("SENT")
+    }
+
+    function getMonths() {
+        console.log("GET MONTHS")
+        xhr = getXmlHttpRequestObject(false);
+        console.log(`${base_url}/${functions_url}/months`)
+        xhr.open("GET", `${base_url}/${functions_url}/months`, true);
+        //xhr.open("GET", "https://dns-web-portal.herokuapp.com/months", true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send();
+    }
+
+    
+
+    window.onload = function() {
+        getMonths()
+    }
+
+
+    function initMap() {
+        var probe_data = {};
+        getProbes()
+
+        function probeResponse(e) {
+            console.log(this.response)
+            probe_data = this.response
+            document.querySelector("#message").textContent = probe_data["message"]
+            makeAllMarkers()
+            setTimeout(() => {document.querySelector("#map-container").style.visibility = "visible"}, 2000)
+        }
+
+        function getProbes() {
+            month = document.querySelector("#month").value
+            reg = document.querySelector("#region").value
+            
+            if (!month) {
+                return
+            }
+            xhr = getXmlHttpRequestObject(false);
+            xhr.onload = probeResponse;
+            xhr.open("POST", "https://dns-web-portal.herokuapp.com/probes", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({"month": month, "reg": reg}));
+            console.log("Getting Probes")
+        }
+
+        var options = {
+            zoom:2,
+            center:{lat:0, lng:0}
+        }
+        var map = new google.maps.Map(document.getElementById('map'), options);
+
+        let marker = {
+            //path: "M10.453 14.016l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM12 2.016q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
+            path: google.maps.SymbolPath.CIRCLE,
+            fillOpacity: 1,
+            strokeWeight: 1,
+            rotation: 0,
+            scale: 6,
+        };
+
+        function addMarker(lat, lng, color) {
+            console.log(lat)
+            console.log(lng)
+            console.log(color)
+            marker.fillColor = color;
+            new google.maps.Marker({position:{lat:lat, lng:lng}, map:map, icon: marker})
+        }
+
+        function makeAllMarkers() {
+            console.log("Make all markers")
+            for (const prop in probe_data) {
+                if (prop == "message")
+                    continue;
+                const data = probe_data[prop]
+                addMarker(data["lat"], data["long"], data["color"])
+                //console.log(probe_data[prop])
+                //console.log(probe_data[prop]["color"])
+            }
+        }
+
+
+    }
+</script>
+<script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJn5xWg452lwoAwYoodhZ3cxjRS6P8emw&callback=initMap">
+  </script>
+</html>
