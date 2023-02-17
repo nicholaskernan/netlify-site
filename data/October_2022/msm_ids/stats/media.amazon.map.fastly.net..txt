@@ -1,0 +1,1 @@
+media.amazon.map.fastly.net., Total SSL: 10164, Target SSL: 12090, Success rate: 0.8406947890818859

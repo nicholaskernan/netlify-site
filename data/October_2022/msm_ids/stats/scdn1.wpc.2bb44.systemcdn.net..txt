@@ -1,0 +1,1 @@
+scdn1.wpc.2bb44.systemcdn.net., Total SSL: 10218, Target SSL: 12090, Success rate: 0.8451612903225807

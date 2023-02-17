@@ -1,0 +1,1 @@
+ou-resources.sdsu.edu.cdn.cloudflare.net., Total SSL: 9654, Target SSL: 12090, Success rate: 0.7985111662531017

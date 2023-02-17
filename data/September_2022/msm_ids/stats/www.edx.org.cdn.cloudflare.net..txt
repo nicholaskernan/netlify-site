@@ -1,0 +1,1 @@
+www.edx.org.cdn.cloudflare.net., Total SSL: 10281, Target SSL: 12150, Success rate: 0.8461728395061728

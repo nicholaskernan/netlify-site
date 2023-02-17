@@ -85,7 +85,8 @@
 <script>
     console.log("here")
     var xhr = null;
-    const base_url = "https://luxury-kheer-a22a0d.netlify.app" //"http://localhost:8888"
+    const base_url = "https://luxury-kheer-a22a0d.netlify.app" 
+    //const base_url = "http://localhost:8888"
     const functions_url = ".netlify/functions"
 
     getXmlHttpRequestObject = function (isImage) {
@@ -192,7 +193,6 @@
         xhr = getXmlHttpRequestObject(false);
         console.log(`${base_url}/${functions_url}/months`)
         xhr.open("GET", `${base_url}/${functions_url}/months`, true);
-        //xhr.open("GET", "https://dns-web-portal.herokuapp.com/months", true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send();
     }
@@ -225,7 +225,7 @@
             }
             xhr = getXmlHttpRequestObject(false);
             xhr.onload = probeResponse;
-            xhr.open("POST", "https://dns-web-portal.herokuapp.com/probes", true);
+            xhr.open("POST", `${base_url}/${functions_url}/probes`, true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify({"month": month, "reg": reg}));
             console.log("Getting Probes")

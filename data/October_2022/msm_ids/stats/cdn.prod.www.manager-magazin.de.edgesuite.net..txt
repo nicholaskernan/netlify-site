@@ -1,0 +1,1 @@
+cdn.prod.www.manager-magazin.de.edgesuite.net., Total SSL: 10329, Target SSL: 12090, Success rate: 0.8543424317617866

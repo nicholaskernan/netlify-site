@@ -1,0 +1,1 @@
+cs510.wpc.edgecastcdn.net., Total SSL: 9846, Target SSL: 12090, Success rate: 0.8143920595533499

@@ -1,15 +1,7 @@
-const fs = require('fs');
-const months = fs.readdirSync('./data/');
-
 exports.handler = async (event, context) => {
 
     let choices = JSON.parse(event.body)
-    console.log(choices)
-    console.log("HI THERE")
-    console.log("HI THERE".toLowerCase())
-
     const keys = ["cdn", "msm", "avg"]
-
     keys.forEach(key => {
         choices[key] = choices[key].toLowerCase()
     });

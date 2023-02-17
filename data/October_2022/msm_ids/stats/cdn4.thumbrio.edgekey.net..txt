@@ -1,0 +1,1 @@
+cdn4.thumbrio.edgekey.net., Total SSL: 10407, Target SSL: 12090, Success rate: 0.8607940446650124
