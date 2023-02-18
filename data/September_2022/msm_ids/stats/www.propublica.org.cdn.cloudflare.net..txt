@@ -1,1 +1,0 @@
-www.propublica.org.cdn.cloudflare.net., Total SSL: 10302, Target SSL: 12150, Success rate: 0.8479012345679012

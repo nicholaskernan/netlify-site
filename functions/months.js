@@ -1,9 +1,10 @@
 const fs = require('fs');
-const available_months = fs.readdirSync('./data/');
+const months = JSON.parse(fs.readFileSync(`./data/months.json`, 'utf8')); 
+//const available_months = fs.readdirSync('./data/');
 
 exports.handler = async () => {
 
-  const months = [ "January", "February", "March", "April", "May", "June",
+ /* const months = [ "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December" ];
 
   const monthdict = {"months": []}
@@ -21,7 +22,7 @@ exports.handler = async () => {
     }
     curr_month = `${months[i]}_${year}`
   }
-
+*/
   return {
     statusCode: 200,
     headers: {
@@ -29,6 +30,6 @@ exports.handler = async () => {
       "Access-Control-Allow-Headers": "Authorization, Content-Type",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(monthdict)
+    body: JSON.stringify(months)
   };
 };

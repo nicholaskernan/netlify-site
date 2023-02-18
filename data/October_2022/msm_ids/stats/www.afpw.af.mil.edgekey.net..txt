@@ -1,1 +1,0 @@
-www.afpw.af.mil.edgekey.net., Total SSL: 10389, Target SSL: 12090, Success rate: 0.8593052109181142

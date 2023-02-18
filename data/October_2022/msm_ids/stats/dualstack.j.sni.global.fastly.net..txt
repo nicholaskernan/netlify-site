@@ -1,1 +1,0 @@
-dualstack.j.sni.global.fastly.net., Total SSL: 8562, Target SSL: 12090, Success rate: 0.7081885856079404

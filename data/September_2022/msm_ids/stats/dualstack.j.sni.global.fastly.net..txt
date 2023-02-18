@@ -1,1 +1,0 @@
-dualstack.j.sni.global.fastly.net., Total SSL: 3444, Target SSL: 1284000

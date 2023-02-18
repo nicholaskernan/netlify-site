@@ -1,1 +1,0 @@
-www1.wdr.de.v1.edgekey.net., Total SSL: 10197, Target SSL: 12090, Success rate: 0.843424317617866

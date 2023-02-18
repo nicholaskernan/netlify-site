@@ -1,1 +1,0 @@
-azureedge.mdc.akamaized.net., Total SSL: 9726, Target SSL: 12090, Success rate: 0.8044665012406947

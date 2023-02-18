@@ -1,1 +1,0 @@
-scdn1.wpc.81638.systemcdn.net., Total SSL: 9735, Target SSL: 12090, Success rate: 0.8052109181141439

@@ -1,4 +1,5 @@
 //Keep in mind directory paths may change between local and prod
+var fs = require('fs');
 
 exports.handler = async (event, context) => {
 
@@ -22,9 +23,14 @@ exports.handler = async (event, context) => {
         }
     }
 
+    const probe_coordinates = JSON.parse(fs.readFileSync('./data/probe_coordinates.json', 'utf8')); 
+    const month_results = JSON.parse(fs.readFileSync(`./data/${choices['month']}/probes_websites.json`, 'utf8')); 
+    const attempted_probes = JSON.parse(fs.readFileSync(`./data/${prev_month}/isp_probes_and_resolvers.json`, 'utf8')); 
+
+    /*
     const month_results = require(`../data/${choices['month']}/analysis/probes_websites.json`)
-    const attempted_probes = require(`../data/${prev_month}/next_isp_probes/isp_probes_and_resolvers.json`)
-    const probe_coordinates = require('../probe_coordinates.json')
+    const attempted_probes = require(`./data/${prev_month}/next_isp_probes/isp_probes_and_resolvers.json`)
+    const probe_coordinates = require('./data/probe_coordinates.json')*/
 
     var probe_results = {}
     var success = 0

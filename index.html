@@ -19,18 +19,23 @@
 </head>
 <body>
     <div>
-        <h1 style="text-align: center;"> DNS/TCP Measurements Web Portal </h1>
-
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+        <h1 style="text-align: center;"> Web Portal for Performance Measurements of DNS Resolver Platforms </h1>
+        <p style="text-align: center; margin-left: 10%; margin-right: 10%;"> 
+            Every month, we schedule measurements from ~400 Ripe-Atlas probes globally to evaluate the performance of ISP resolvers and four popular public resolvers 
+            in terms of their DNS latency and quality of CDN mappings. To view specific results choose the measurement month, CDN, IP version, and region from the dropdowns below. 
+            Clicking "submit" will display 4 plots (or 16, if all CDNs are selected): the median and mean CDFs, for DNS latency and CDN mapping (TCP) latency corresponding to your chosen options. 
+        </p>
+        <br>
+        &nbsp; &nbsp; 
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
         &nbsp; &nbsp; &nbsp; &nbsp; 
-        <label for="month">Month:</label>
+        <label for="month">Measurement Month:</label>
         <select name="month" id="month">
         </select>
 
         &nbsp; &nbsp; &nbsp; &nbsp; 
-        <label for="cdn">CDN:</label>
+        <label for="cdn">CDN to include:</label>
         <select name="cdn" id="cdn">
             <option>All</option>
             <option>Akamai</option>
@@ -40,7 +45,7 @@
         </select>
 
         &nbsp; &nbsp; &nbsp; &nbsp;
-        <label for="ip">IP:</label>
+        <label for="ip">IP version:</label>
         <select name="ip" id="ip">
             <option>Dual-stack</option>
             <option>IPv4</option>
@@ -62,20 +67,22 @@
         &nbsp; &nbsp; &nbsp; &nbsp; 
         <button onclick="getChoices()">Submit</button>
 
-        <p style="text-align: center; margin-left: 10%; margin-right: 10%;"> 
-            Every month, we schedule measurements from ~400 Ripe-Atlas probes globally to evaluate various resolvers by comparing DNS latency 
-            and TCP latency to the edge server returned by the resolver, and to see if this performance depends on the geographic region of the probe or 
-            the CDN employed by the measured website. Results are obtained by taking the average (median or mean) over every website with your chosen 
-            CDN, for each probe-resolver pairing. 
-        </p>
-        <p style="text-align: center; margin-left: 10%; margin-right: 10%;"> 
-            Clicking "submit" will display CDFs for your chosen options. Under each one is also reported the average latency of the best and worst
-            resolver, as well as the overall average latency for that graph.
-        </p>
     </div>
     <hr>
     <br>
+    <p id="image-explanation" style="text-align: center; margin-left: 10%; margin-right: 10%; visibility: hidden;">
+        
+        Probes attempt measurements to 5 websites accelerated by the chosen CDN (or 10 in the case of Akamai). CDF curves for a given 
+        resolver are obtained by taking the mean (or median) twice: once to obtain the mean (median) reading for each probe*website combination,
+        then again to obtain the mean (median) latency for each probe on that CDN. Probes are sorted according to this value before plotting. Thus, a point of 
+        (10, 100) on a plot would indicate that 100 probes had mean (median) latencies of 10 ms or better for that resolver, while the rest had a higher latency. 
+        <br>
+        We can take can the mean (median) one final time across all probes to obtain the overall mean (median) latency of that resolver. Below each plot we display the 
+        worst and best mean (median) latencies obtained this way. 
+    </p>   
     <div id="images"></div>
+
+    
     <div id="map-container" style="visibility: hidden; text-align: center;">
         <br> <br> <br> <br> <br> 
         <h1> Probe Map </h1> <p id="message"> </p><hr>
@@ -83,9 +90,8 @@
     </div>  
 </body>
 <script>
-    console.log("here")
     var xhr = null;
-    const base_url = "https://luxury-kheer-a22a0d.netlify.app" 
+    const base_url = "https://dns-web-portal.netlify.app" 
     //const base_url = "http://localhost:8888"
     const functions_url = ".netlify/functions"
 
@@ -103,23 +109,18 @@
     };
 
     function imageResponse(e) {
-        console.log(this.response["url"])
         var urlCreator = window.URL || window.webkitURL;
         //var imageUrl = urlCreator.createObjectURL(this.response);
         const myImage = new Image()
-        console.log(`${base_url}/${this.response["url"]}`)
         myImage.src = `${base_url}/${this.response["url"]}` //imageUrl
         document.querySelector("#images").appendChild(myImage);
-        //document.querySelector("#image").src = imageUrl;
+        document.querySelector("#image-explanation").style.visibility = "visible"
     }
 
     function monthResponse(e) {
-        console.log("MONTH RESPONSE")
-        console.log(this.response)
         const select = document.getElementById("month");
 
         this.response["months"].forEach(element => {
-            console.log(element)
             const option = document.createElement("option");
             option.text = element;
             select.add(option);
@@ -130,6 +131,7 @@
         images = document.querySelectorAll("img")
         images.forEach((img) => img.remove())
         document.querySelector("#map-container").style.visibility = "hidden"
+        document.querySelector("#image-explanation").style.visibility = "hidden"
     }
 
     function getChoices() {
@@ -143,16 +145,12 @@
 
 
         choices = {"month": month, "cdn": cdn, "ip": ip, "reg": reg}
-        console.log(choices)
 
         if (cdn=="All") {
             const cdns = ["Akamai", "Cloudflare", "Edgecast", "Fastly"]
-            console.log("mama mia")
-            console.log(cdns)
             
             for (i=0; i<4; i++) {
                 element = cdns[i]
-                console.log(element)
                 const copy = Object.assign({}, choices)
                 copy["cdn"] = element
                 setTimeout(() => {addFourGraphs(copy)}, i*400);
@@ -185,13 +183,12 @@
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         // Send the request over the network
         xhr.send(JSON.stringify(choices));
-        console.log("SENT")
+        console.log("Getting graphs for selection")
     }
 
     function getMonths() {
-        console.log("GET MONTHS")
+        console.log("Getting months")
         xhr = getXmlHttpRequestObject(false);
-        console.log(`${base_url}/${functions_url}/months`)
         xhr.open("GET", `${base_url}/${functions_url}/months`, true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send();
@@ -209,7 +206,6 @@
         getProbes()
 
         function probeResponse(e) {
-            console.log(this.response)
             probe_data = this.response
             document.querySelector("#message").textContent = probe_data["message"]
             makeAllMarkers()
@@ -247,22 +243,16 @@
         };
 
         function addMarker(lat, lng, color) {
-            console.log(lat)
-            console.log(lng)
-            console.log(color)
             marker.fillColor = color;
             new google.maps.Marker({position:{lat:lat, lng:lng}, map:map, icon: marker})
         }
 
         function makeAllMarkers() {
-            console.log("Make all markers")
             for (const prop in probe_data) {
                 if (prop == "message")
                     continue;
                 const data = probe_data[prop]
                 addMarker(data["lat"], data["long"], data["color"])
-                //console.log(probe_data[prop])
-                //console.log(probe_data[prop]["color"])
             }
         }
 
@@ -270,6 +260,6 @@
     }
 </script>
 <script async defer 
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJn5xWg452lwoAwYoodhZ3cxjRS6P8emw&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0Shjj2HxqVgSDssMm71IhTgZG0-CLO_s&callback=initMap">
   </script>
 </html>

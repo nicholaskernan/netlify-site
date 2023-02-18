@@ -1,1 +1,0 @@
-www.mfa.gr.edgesuite.net., Total SSL: 10005, Target SSL: 12090, Success rate: 0.8275434243176178

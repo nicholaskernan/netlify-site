@@ -1,1 +1,0 @@
-s4-cloudinary-pin.map.fastly.net., Total SSL: 3472, Target SSL: 1284000

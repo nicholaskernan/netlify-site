@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
     region = choices["reg"]
     ip = choices["ip"]
     choice_string = `${choices['cdn']}_${choices['msm']}_${choices['avg']}`
-    console.log(`./data/${choices['month']}/images/${region}/${ip}/${choice_string}.png`)
+    console.log(`./images/${choices['month']}/images/${region}/${ip}/${choice_string}.png`)
 
     return {
       statusCode: 200,
@@ -18,6 +18,6 @@ exports.handler = async (event, context) => {
         "Access-Control-Allow-Headers": "Authorization, Content-Type",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({"url": `/data/${choices['month']}/images/${region}/${ip}/${choice_string}.png`})
+      body: JSON.stringify({"url": `/images/${choices['month']}/images/${region}/${ip}/${choice_string}.png`})
     };
   };
