@@ -1,0 +1,5 @@
+www-gov-uk.map.fastly.net..json
+dualstack.j.sni.global.fastly.net..json
+pantheon-systems.map.fastly.net..json
+s4-cloudinary-pin.map.fastly.net..json
+media.amazon.map.fastly.net..json
