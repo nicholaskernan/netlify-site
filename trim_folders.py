@@ -1,7 +1,7 @@
 import os 
 import shutil
 
-for month in ["October_2023"]:
+for month in ["August_2023", "September_2023", "November_2023"]:
 
     shutil.copy(f"data/{month}/analysis/probes_websites.json", f"data/{month}/.")
     shutil.copy(f"data/{month}/next_isp_probes/isp_probes_and_resolvers.json", f"data/{month}/.")
